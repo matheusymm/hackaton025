@@ -1,8 +1,9 @@
 export interface UserMetrics {
-    id: string,
-    lastLoggingTime?: Date,
-    lastAppUseTime?: number, //seconds
-    lastContentType?: string,
-    lastContentCategory?: string | null,
-    videosWatched: number
+  id: string,
+  userId: string,
+  lastLogginTime: Date,
+  lastAppUseTime: number, //seconds
+  lastContentType?: string | null,
+  lastContentCategory?: string | null,
+  videosWatched: number
 }

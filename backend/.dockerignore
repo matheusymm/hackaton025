@@ -1,0 +1,28 @@
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Build output
+dist
+build
+.env
+.env.local
+
+# Node dependencies
+node_modules
+.npm
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+.dockerignore

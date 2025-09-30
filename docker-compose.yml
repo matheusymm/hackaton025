@@ -2,11 +2,21 @@ networks:
   default:
 
 services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hackaton-backend-container
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - default
+    
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: hackaton-frontend:latest
     container_name: hackaton-frontend-container
     ports:
       - "8080:80"
