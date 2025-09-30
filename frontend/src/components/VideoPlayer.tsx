@@ -47,7 +47,7 @@ const VideoPlayer = ({ videos }: VideoPlayerProps) => {
   useEffect(() => {
     const currentPlayer = playerRefs.current[currentIndex];
     if (currentPlayer) {
-// eslint-disable-next-line
+      // eslint-disable-next-line
       isMuted ? currentPlayer.mute() : currentPlayer.unMute();
     }
   }, [isMuted, currentIndex, videos]);
@@ -68,7 +68,7 @@ const VideoPlayer = ({ videos }: VideoPlayerProps) => {
       loop: 1,
       playlist: '',
       fs: 0,
-      origin: 'https://localhost:5173', 
+      origin: 'http://localhost:5173',
     },
   };
 
@@ -84,14 +84,14 @@ const VideoPlayer = ({ videos }: VideoPlayerProps) => {
       >
         {videos.map((video, index) => (
           <div key={video.id.videoId} className="w-full h-full relative">
-            <YouTube
-              videoId={video.id.videoId}
-              opts={{ ...opts, playlist: video.id.videoId, playerVars: { ...opts.playerVars, mute: isMuted ? 1 : 0 } }}
-              className="w-full h-full"
-              onReady={(event) => {
-                playerRefs.current[index] = event.target;
-                if (isMuted) event.target.mute();
-              }}
+            <iframe
+              width="853"
+              height="480"
+              src={`https://www.youtube.com/embed/${video.id.videoId}?enablejsapi=1&origin=http://localhost:5173`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="Embedded youtube"
             />
           </div>
         ))}
