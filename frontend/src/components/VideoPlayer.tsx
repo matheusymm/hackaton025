@@ -1,5 +1,22 @@
-import { useState, useRef, useEffect } from 'react';
+// VideoPlayer.tsx
+
+import React, { useState, useRef, useEffect } from 'react';
 import YouTube from 'react-youtube';
+
+// Interface para os dados do vídeo da API
+interface YouTubeVideo {
+  id: {
+    videoId: string;
+  };
+  snippet: {
+    title: string;
+  };
+}
+
+// Interface para as props do nosso componente
+interface VideoPlayerProps {
+  videos: YouTubeVideo[];
+}
 
 interface YouTubePlayer {
   playVideo: () => void;
@@ -9,14 +26,7 @@ interface YouTubePlayer {
   unMute: () => void;
 }
 
-const videoIds = [
-  'g_x91bov_dk',
-  'LQ93s_y6_2I',
-  'V-kx20th_hM',
-  '6qDCG1o2oJ4',
-];
-
-const TikTokPlayer = () => {
+const VideoPlayer = ({ videos }: VideoPlayerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const playerRefs = useRef<YouTubePlayer[]>([]);
@@ -32,17 +42,18 @@ const TikTokPlayer = () => {
         }
       }
     });
-  }, [currentIndex]);
+  }, [currentIndex, videos]);
 
   useEffect(() => {
     const currentPlayer = playerRefs.current[currentIndex];
     if (currentPlayer) {
+// eslint-disable-next-line
       isMuted ? currentPlayer.mute() : currentPlayer.unMute();
     }
-  }, [isMuted, currentIndex]);
+  }, [isMuted, currentIndex, videos]);
 
   const goToPrevious = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
-  const goToNext = () => setCurrentIndex((p) => (p < videoIds.length - 1 ? p + 1 : p));
+  const goToNext = () => setCurrentIndex((p) => (p < videos.length - 1 ? p + 1 : p));
   const toggleMute = () => setIsMuted((p) => !p);
 
   const opts = {
@@ -57,6 +68,7 @@ const TikTokPlayer = () => {
       loop: 1,
       playlist: '',
       fs: 0,
+      origin: 'https://localhost:5173', 
     },
   };
 
@@ -70,11 +82,11 @@ const TikTokPlayer = () => {
         className="w-full h-full transition-transform duration-500 ease-in-out"
         style={{ transform: `translateY(-${currentIndex * 100}%)` }}
       >
-        {videoIds.map((videoId, index) => (
-          <div key={videoId} className="w-full h-full relative">
+        {videos.map((video, index) => (
+          <div key={video.id.videoId} className="w-full h-full relative">
             <YouTube
-              videoId={videoId}
-              opts={{ ...opts, playlist: videoId, playerVars: { ...opts.playerVars, mute: isMuted ? 1 : 0 } }}
+              videoId={video.id.videoId}
+              opts={{ ...opts, playlist: video.id.videoId, playerVars: { ...opts.playerVars, mute: isMuted ? 1 : 0 } }}
               className="w-full h-full"
               onReady={(event) => {
                 playerRefs.current[index] = event.target;
@@ -104,7 +116,7 @@ const TikTokPlayer = () => {
         </button>
         <button
           onClick={goToNext}
-          disabled={currentIndex === videoIds.length - 1}
+          disabled={currentIndex === videos.length - 1}
           className={buttonBaseClasses}
         >
           <span className="material-symbols-outlined">keyboard_arrow_down</span>
@@ -114,4 +126,4 @@ const TikTokPlayer = () => {
   );
 };
 
-export default TikTokPlayer;
+export default VideoPlayer;
