@@ -1,0 +1,15 @@
+networks:
+  default:
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: hackaton-frontend:latest
+    container_name: hackaton-frontend-container
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - default
