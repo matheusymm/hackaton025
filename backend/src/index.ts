@@ -18,7 +18,7 @@ const port = process.env.PORT || 3000;
 const UserRepository = new PrismaUserRepository(prisma);
 const userService = new UserServicesImpl(UserRepository);
 const createUserController = new CreateUserController(userService);
-app.post('/', adaptExpressController(createUserController));
+app.post('/user', adaptExpressController(createUserController));
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello from Express with TypeScript!');
