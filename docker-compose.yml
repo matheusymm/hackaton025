@@ -4,7 +4,7 @@ networks:
 services:
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
     image: hackaton-frontend:latest
     container_name: hackaton-frontend-container
