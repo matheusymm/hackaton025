@@ -1,6 +1,9 @@
 networks:
   default:
 
+volumes:
+  mysql_data:
+
 services:
   backend:
     build:
@@ -23,3 +26,17 @@ services:
     restart: unless-stopped
     networks:
       - default
+
+  mysql:
+    image: mysql:8.1
+    container_name: mysql_hck2025
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: hck2025
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
