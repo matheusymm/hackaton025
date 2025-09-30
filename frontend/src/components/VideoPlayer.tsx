@@ -1,7 +1,5 @@
 // VideoPlayer.tsx
-
-import React, { useState, useRef, useEffect } from 'react';
-import YouTube from 'react-youtube';
+import { useState, useRef, useEffect } from 'react';
 
 // Interface para os dados do vídeo da API
 interface YouTubeVideo {
@@ -22,13 +20,10 @@ interface YouTubePlayer {
   playVideo: () => void;
   pauseVideo: () => void;
   seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
-  mute: () => void;
-  unMute: () => void;
 }
 
 const VideoPlayer = ({ videos }: VideoPlayerProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
   const playerRefs = useRef<YouTubePlayer[]>([]);
 
   useEffect(() => {
@@ -44,35 +39,10 @@ const VideoPlayer = ({ videos }: VideoPlayerProps) => {
     });
   }, [currentIndex, videos]);
 
-  useEffect(() => {
-    const currentPlayer = playerRefs.current[currentIndex];
-    if (currentPlayer) {
-      // eslint-disable-next-line
-      isMuted ? currentPlayer.mute() : currentPlayer.unMute();
-    }
-  }, [isMuted, currentIndex, videos]);
-
   const goToPrevious = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
   const goToNext = () => setCurrentIndex((p) => (p < videos.length - 1 ? p + 1 : p));
-  const toggleMute = () => setIsMuted((p) => !p);
 
-  const opts = {
-    height: '100%',
-    width: '100%',
-    playerVars: {
-      autoplay: 1,
-      controls: 0,
-      rel: 0,
-      showinfo: 0,
-      modestbranding: 1,
-      loop: 1,
-      playlist: '',
-      fs: 0,
-      origin: 'http://localhost:5173',
-    },
-  };
-
-  const buttonBaseClasses = "bg-black/50 hover:bg-black/70 border border-white/50 text-black text-2xl w-12 h-12 rounded-full cursor-pointer transition-all flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed";
+  const buttonBaseClasses = "bg-black/50 hover:bg-black/70 border border-white/50 text-white text-2xl w-12 h-12 rounded-full cursor-pointer transition-all flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed";
 
   return (
     <div
@@ -82,29 +52,17 @@ const VideoPlayer = ({ videos }: VideoPlayerProps) => {
         className="w-full h-full transition-transform duration-500 ease-in-out"
         style={{ transform: `translateY(-${currentIndex * 100}%)` }}
       >
-        {videos.map((video, index) => (
+        {videos.map((video) => (
           <div key={video.id.videoId} className="w-full h-full relative">
             <iframe
-              width="853"
-              height="480"
-              src={`https://www.youtube.com/embed/${video.id.videoId}?enablejsapi=1&origin=http://localhost:5173`}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              className="absolute top-0 left-0 w-full h-full"
+              src={`https://www.youtube.com/embed/${video.id.videoId}?loop=1&playlist=${video.id.videoId}&autoplay=1&enablejsapi=1&origin=http://localhost:5173`}              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title="Embedded youtube"
             />
           </div>
         ))}
       </div>
-
-      <button
-        onClick={toggleMute}
-        className={`${buttonBaseClasses} absolute bottom-5 left-5 z-10`}
-      >
-        <span className="material-symbols-outlined">
-          {isMuted ? 'volume_off' : 'volume_up'}
-        </span>
-      </button>
 
       <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col gap-4 z-10">
         <button
