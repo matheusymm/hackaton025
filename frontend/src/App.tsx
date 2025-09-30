@@ -4,6 +4,7 @@ import HomePage from './pages/home';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import ProfilePage from './pages/profile';
+import VideoPlayer from './pages/Player';
 
 const App = () => {
 
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/player" element={<VideoPlayer />} />
       </Routes>
     </>
   )

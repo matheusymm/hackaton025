@@ -1,90 +1,114 @@
-import React, { useState, useRef, useEffect, createRef } from 'react';
-import type { RefObject } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import YouTube from 'react-youtube';
 
-// --- Example video URLs ---
-const videos = [
-  'https://assets.mixkit.co/videos/preview/mixkit-girl-frowning-and-looking-at-the-camera-39726-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-woman-in-a-pool-39741-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-woman-running-by-the-ocean-41223-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-woman-posing-for-the-camera-in-the-middle-of-nowhere-39725-large.mp4',
+interface YouTubePlayer {
+  playVideo: () => void;
+  pauseVideo: () => void;
+  seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+  mute: () => void;
+  unMute: () => void;
+}
+
+const videoIds = [
+  'g_x91bov_dk',
+  'LQ93s_y6_2I',
+  'V-kx20th_hM',
+  '6qDCG1o2oJ4',
 ];
 
-// --- Main Component ---
 const TikTokPlayer = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  // --- FIX: Typing the useRef ---
-  // We tell TypeScript that this ref will hold an array of references to video elements.
-  const videoRefs = useRef<RefObject<HTMLVideoElement>[]>([]);
-
-  videoRefs.current = videos.map((_, i) => videoRefs.current[i] ?? createRef<HTMLVideoElement>());
+  const [isMuted, setIsMuted] = useState(true);
+  const playerRefs = useRef<YouTubePlayer[]>([]);
 
   useEffect(() => {
-    videoRefs.current.forEach((ref, index) => {
-      // `ref.current` is now recognized by TypeScript!
-      if (ref.current) {
+    playerRefs.current.forEach((player, index) => {
+      if (player && typeof player.playVideo === 'function') {
         if (index === currentIndex) {
-          ref.current.play().catch(error => {
-            console.log("Autoplay was blocked by the browser.", error);
-          });
+          player.playVideo();
         } else {
-          ref.current.pause();
-          ref.current.currentTime = 0;
+          player.pauseVideo();
+          player.seekTo(0);
         }
       }
     });
   }, [currentIndex]);
 
-  const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex < videos.length - 1 ? prevIndex + 1 : prevIndex));
-  };
-
-  // --- GOOD PRACTICE: Typing the mouse event ---
-  const handleWheel = (e: React.WheelEvent) => {
-    if (e.deltaY > 0) {
-      goToNext();
-    } else if (e.deltaY < 0) {
-      goToPrevious();
+  useEffect(() => {
+    const currentPlayer = playerRefs.current[currentIndex];
+    if (currentPlayer) {
+      isMuted ? currentPlayer.mute() : currentPlayer.unMute();
     }
+  }, [isMuted, currentIndex]);
+
+  const goToPrevious = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
+  const goToNext = () => setCurrentIndex((p) => (p < videoIds.length - 1 ? p + 1 : p));
+  const toggleMute = () => setIsMuted((p) => !p);
+
+  const opts = {
+    height: '100%',
+    width: '100%',
+    playerVars: {
+      autoplay: 1,
+      controls: 0,
+      rel: 0,
+      showinfo: 0,
+      modestbranding: 1,
+      loop: 1,
+      playlist: '',
+      fs: 0,
+    },
   };
+
+  const buttonBaseClasses = "bg-black/50 hover:bg-black/70 border border-white/50 text-black text-2xl w-12 h-12 rounded-full cursor-pointer transition-all flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed";
 
   return (
-    // The JSX remains the same, but is now type-safe
-    <div className="tiktok-player-container" onWheel={handleWheel}>
-      <style>{`
-        /* CSS here remains the same */
-        .tiktok-player-container { width: 100%; max-width: 400px; height: 80vh; border: 1px solid #333; border-radius: 20px; overflow: hidden; position: relative; background-color: black; margin: 2rem auto; }
-        .video-wrapper { width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
-        .video-slide { width: 100%; height: 100%; position: relative; }
-        .video-slide video { width: 100%; height: 100%; object-fit: cover; }
-        .controls { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 10; }
-        .controls button { background-color: rgba(255, 255, 255, 0.5); border: none; color: black; font-size: 24px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: background-color 0.2s; }
-        .controls button:hover { background-color: rgba(255, 255, 255, 0.8); }
-        .controls button:disabled { opacity: 0.3; cursor: not-allowed; }
-      `}</style>
+    <div
+      className="w-full max-w-sm h-[80vh] border border-neutral-700 rounded-2xl overflow-hidden relative bg-black my-8 mx-auto"
+    >
       <div
-        className="video-wrapper"
+        className="w-full h-full transition-transform duration-500 ease-in-out"
         style={{ transform: `translateY(-${currentIndex * 100}%)` }}
       >
-        {videos.map((videoUrl, index) => (
-          <div key={index} className="video-slide">
-            <video
-              ref={videoRefs.current[index]}
-              src={videoUrl}
-              loop
-              playsInline
-              onClick={(e) => (e.target as HTMLVideoElement).paused ? (e.target as HTMLVideoElement).play() : (e.target as HTMLVideoElement).pause()}
+        {videoIds.map((videoId, index) => (
+          <div key={videoId} className="w-full h-full relative">
+            <YouTube
+              videoId={videoId}
+              opts={{ ...opts, playlist: videoId, playerVars: { ...opts.playerVars, mute: isMuted ? 1 : 0 } }}
+              className="w-full h-full"
+              onReady={(event) => {
+                playerRefs.current[index] = event.target;
+                if (isMuted) event.target.mute();
+              }}
             />
           </div>
         ))}
       </div>
-      <div className="controls">
-        <button onClick={goToPrevious} disabled={currentIndex === 0}>▲</button>
-        <button onClick={goToNext} disabled={currentIndex === videos.length - 1}>▼</button>
+
+      <button
+        onClick={toggleMute}
+        className={`${buttonBaseClasses} absolute bottom-5 left-5 z-10`}
+      >
+        <span className="material-symbols-outlined">
+          {isMuted ? 'volume_off' : 'volume_up'}
+        </span>
+      </button>
+
+      <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col gap-4 z-10">
+        <button
+          onClick={goToPrevious}
+          disabled={currentIndex === 0}
+          className={buttonBaseClasses}
+        >
+          <span className="material-symbols-outlined">keyboard_arrow_up</span>
+        </button>
+        <button
+          onClick={goToNext}
+          disabled={currentIndex === videoIds.length - 1}
+          className={buttonBaseClasses}
+        >
+          <span className="material-symbols-outlined">keyboard_arrow_down</span>
+        </button>
       </div>
     </div>
   );
