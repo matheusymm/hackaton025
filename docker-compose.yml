@@ -12,6 +12,8 @@ services:
     container_name: hackaton-backend-container
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: "mysql://mysql:mysql@mysql:3306/hck2025"
     restart: unless-stopped
     networks:
       - default
