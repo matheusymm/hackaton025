@@ -17,6 +17,17 @@ services:
     restart: unless-stopped
     networks:
       - default
+
+  pyapi:
+    build:
+      context: ./pyapi
+      dockerfile: Dockerfile
+    container_name: hackaton-pyapi-container
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - default
     
   frontend:
     build:
@@ -24,7 +35,7 @@ services:
       dockerfile: Dockerfile
     container_name: hackaton-frontend-container
     ports:
-      - "8080:80"
+      - "80:80"
     restart: unless-stopped
     networks:
       - default
