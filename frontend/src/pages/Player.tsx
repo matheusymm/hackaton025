@@ -9,10 +9,10 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
 const sampleApiData = [
-  { id: { videoId: 'DeQ9CgfPgtI' }, snippet: { title: 'Planeta Terra' } },
-  { id: { videoId: 'RUQ_j-nR1Kk' }, snippet: { title: 'Esqui na neve' } },
-  { id: { videoId: 'uo9irp7Q2yE' }, snippet: { title: 'Areia Cinética' } },
-  { id: { videoId: 'It-d58Py22w' }, snippet: { title: 'Paisagem Noruega' } },
+  { id: { videoId: 'DeQ9CgfPgtI' }, },
+  { id: { videoId: 'RUQ_j-nR1Kk' }, },
+  { id: { videoId: 'uo9irp7Q2yE' }, },
+  { id: { videoId: 'It-d58Py22w' },  },
 ];
 
 function App() {

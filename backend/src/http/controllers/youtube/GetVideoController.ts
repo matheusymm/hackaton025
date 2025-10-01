@@ -1,0 +1,35 @@
+import {
+  HttpController,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusEnum,
+} from "../..";
+import { z } from "zod";
+import { InvalidFieldError } from "../../../domain/errors";
+import { getVideosIdsByQuery } from "../../../infra/youtube/getVideosIdsByQuery";
+
+export class GetVideosController implements HttpController {
+  async handle(req: HttpRequest): Promise<HttpResponse<any>> {
+    const querySchema = z.object({
+      query: z.string().min(1, "Query não pode ser vazia"),
+      duration: z.enum(["short", "medium", "long"]).optional(),
+    });
+
+    const parsed = querySchema.safeParse(req.query);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      const fieldName = firstIssue.path.join(".");
+      const errorMessage = `${fieldName}: ${firstIssue.message}`;
+      throw new InvalidFieldError("Invalid field", errorMessage);
+    }
+
+    const { query } = parsed.data;
+
+    const videoIds = await getVideosIdsByQuery(query, "short");
+
+    return {
+      status: HttpStatusEnum.Ok,
+      data: { videoIds },
+    };
+  }
+}
