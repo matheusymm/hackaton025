@@ -3,11 +3,12 @@ import { UserServices } from "../../../services/UserServices";
 import { HttpController, HttpRequest, HttpResponse, HttpStatusEnum } from "../..";
 import { z } from 'zod';
 import { InvalidFieldError } from "../../../domain/errors";
+import { User } from "../../../domain/User";
 
 export class CreateUserController implements HttpController {
     constructor(private service: UserServices){}
 
-    async handle(req: HttpRequest): Promise<HttpResponse<any>>{
+    async handle(req: HttpRequest): Promise<HttpResponse<User>>{
         // Zod schema for the request body
         const userSchema = z.object({
         email: z.email(),
@@ -26,7 +27,7 @@ export class CreateUserController implements HttpController {
             //console.log(errorMessage);
             throw new InvalidFieldError('Invalid field', errorMessage);
         }
-        await this.service.create(parsed.data)
-        return { status: HttpStatusEnum.Created}
+        const user = await this.service.create(parsed.data)
+        return { status: HttpStatusEnum.Created, data:user }
     }
 }
