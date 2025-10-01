@@ -7,6 +7,7 @@ import { UserServicesImpl } from './services/UserServicesImpl';
 import { adaptExpressController } from './http/adapters/expressControllerAdapter';
 import { ErrorHandler } from './http/middlewares/errorHandler';
 import { adaptExpressErrorHandler } from './http/adapters/expressErrorAdapter';
+import { GetVideosController } from './http/controllers/youtube/GetVideoController';
 
 dotenv.config();
 
@@ -18,7 +19,9 @@ const port = process.env.PORT || 3000;
 const UserRepository = new PrismaUserRepository(prisma);
 const userService = new UserServicesImpl(UserRepository);
 const createUserController = new CreateUserController(userService);
+const getvideos = new GetVideosController()
 app.post('/user', adaptExpressController(createUserController));
+app.post('/search', adaptExpressController(getvideos))
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello from Express with TypeScript!');
