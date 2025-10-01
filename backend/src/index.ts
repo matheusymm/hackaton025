@@ -20,8 +20,8 @@ const UserRepository = new PrismaUserRepository(prisma);
 const userService = new UserServicesImpl(UserRepository);
 const createUserController = new CreateUserController(userService);
 const getvideos = new GetVideosController()
-app.post('/user', adaptExpressController(createUserController));
-app.post('/search', adaptExpressController(getvideos))
+app.post('/api/user', adaptExpressController(createUserController));
+app.post('/api/search', adaptExpressController(getvideos))
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello from Express with TypeScript!');
