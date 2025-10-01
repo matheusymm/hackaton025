@@ -5,12 +5,8 @@ import { User } from "../domain/User";
 export class PrismaUserRepository implements UserRepository {
     constructor(private readonly prismaClient: PrismaClient){   }
     
-    async create(user: User): Promise<void> {
-        try {
-            await this.prismaClient.user.create({ data: user })
-        } catch (error) {
-            console.log('There was a error while creating user:\n', error)
-        }
+    async create(user: User): Promise<User> {
+        return await this.prismaClient.user.create({ data: user })
     }
     async update(user: Partial<User>,userId: string): Promise<boolean> {
         const isUser = await this.prismaClient.user.update({

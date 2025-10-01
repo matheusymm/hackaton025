@@ -8,7 +8,7 @@ export class UserServicesImpl implements UserServices {
     constructor(private readonly repository: UserRepository){
     }
 
-    async create(user: CreateUserDto): Promise<void> {
+    async create(user: CreateUserDto): Promise<User> {
         const id = uuidv4()
         const age = new Date(user.age)
         const userToCreate = {id, age, email: user.email,
@@ -17,7 +17,7 @@ export class UserServicesImpl implements UserServices {
             verfifiedAccount: user.verfifiedAccount
         }
         
-        this.repository.create(userToCreate)
+        return await this.repository.create(userToCreate)
     }
 
     async update(user: Partial<User>,userId: string): Promise<boolean> {
