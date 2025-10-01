@@ -6,8 +6,8 @@ import {
 } from "../..";
 import { z } from "zod";
 import { InvalidFieldError } from "../../../domain/errors";
-import { getVideosIdsByQuery } from "../../../infra/youtube/getVideosIdsByQuery";
 import { AccessPyApi } from "../../../infra/pyapi/AccessPyApi";
+import { getVideosIdsByQuery } from "../../../infra/youtube/getVideosIdsQuery";
 
 export class GetVideosController implements HttpController {
   async handle(req: HttpRequest): Promise<HttpResponse<any>> {
