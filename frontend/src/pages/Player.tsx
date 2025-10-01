@@ -1,5 +1,5 @@
 import VideoPlayer from '../components/VideoPlayer';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,17 +8,14 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 
-const sampleApiData = [
-  { id: { videoId: 'DeQ9CgfPgtI' }, snippet: { title: 'Planeta Terra' } },
-  { id: { videoId: 'RUQ_j-nR1Kk' }, snippet: { title: 'Esqui na neve' } },
-  { id: { videoId: 'uo9irp7Q2yE' }, snippet: { title: 'Areia Cinética' } },
-  { id: { videoId: 'It-d58Py22w' }, snippet: { title: 'Paisagem Noruega' } },
-];
-
 function App() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const videos = state?.videos;
+
   return (
-   <div className='flex flex-col w-screen h-screen bg-gray-100'>
+    <div className='flex flex-col w-screen h-screen bg-gray-100'>
       <div className='w-full'>
         <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">
@@ -41,7 +38,7 @@ function App() {
           </AppBar>
         </Box>
       </div>
-          <VideoPlayer videos={sampleApiData} />
+      <VideoPlayer videos={videos} />
     </div>
   );
 }

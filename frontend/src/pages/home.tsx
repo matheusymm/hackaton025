@@ -10,17 +10,23 @@ import MenuIcon from '@mui/icons-material/Menu';
 import TextField from '@mui/material/TextField';
 import SendIcon from '@mui/icons-material/Send';
 import InputAdornment from '@mui/material/InputAdornment';
+import api from '../api/api';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [name,] = useState('NOME DO USUÁRIO');
   const [searchString, setSearchString] = useState('');
 
-  // TODO: api integration
   const handleSubmit = () => {
     if (!searchString.trim()) return;
 
-    alert(`Você pediu: ${searchString}`);
+    api.post('/search', { query: searchString, type: 'openai' }).then((response) => {
+      console.log(response.data.videoIds);
+      setSearchString('');
+      navigate('/videos', { state: { videos: response.data.videoIds } });
+    }).catch((error) => {
+      console.error('Error during API call:', error);
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<Element>) => {
