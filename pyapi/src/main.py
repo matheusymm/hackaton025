@@ -5,8 +5,9 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import spacy
 import urllib.parse
-app = FastAPI()
 load_dotenv()
+app = FastAPI()
+
 
 @app.get("/healthcheck")
 def read_root():
