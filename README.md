@@ -5,6 +5,8 @@
 - Cronômetro para que o usuário não perca tanto tempo no app, quando acaba a seguinte tela é mostrada:
 <img width="1600" height="752" alt="image" src="https://github.com/user-attachments/assets/088bf1e0-fff1-4713-a1dc-94bfc1c395a6" />
 
+# Fluxograma
+<img width="1002" height="454" alt="image" src="https://github.com/user-attachments/assets/9116f626-ebb9-4fc3-bb5f-b913f9908aed" />
 
 ## Tecnologias 
 - **MAGALU CLOUD**
